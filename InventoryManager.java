@@ -84,7 +84,6 @@ public class InventoryManager {
     return false;
 }
    public ArrayList<Product> getLowStockProducts() {
-
     ArrayList<Product> lowStockProducts = new ArrayList<>();
 
     for (Product product : products) {
