@@ -196,5 +196,68 @@ public void sortByPrice(boolean ascending) {
             }
         }
     }
+        }
+        public String generateSummaryReport() {
+
+    int totalProducts = products.size();
+    int totalUnits = 0;
+    double totalInventoryValue = 0;
+
+    int topsCount = 0;
+    int bottomsCount = 0;
+    int outerwearCount = 0;
+
+    double topsValue = 0;
+    double bottomsValue = 0;
+    double outerwearValue = 0;
+
+    for (Product product : products) {
+
+        totalUnits += product.getQuantity();
+
+        double productValue = product.getUnitPrice() * product.getQuantity();
+
+        totalInventoryValue += productValue;
+
+        if (product.getCategory().equals("Tops")) {
+            topsCount++;
+            topsValue += productValue;
+        } else if (product.getCategory().equals("Bottoms")) {
+            bottomsCount++;
+            bottomsValue += productValue;
+        } else if (product.getCategory().equals("Outerwear")) {
+            outerwearCount++;
+            outerwearValue += productValue;
+        }
+    }
+
+    String report = "";
+
+    report += "\n===== INVENTORY SUMMARY REPORT =====\n";
+    report += "Total Products: " + totalProducts + "\n";
+    report += "Total Units: " + totalUnits + "\n";
+    report += "Total Inventory Value: " + totalInventoryValue + "\n";
+
+    report += "\n===== CATEGORY BREAKDOWN =====\n";
+    report += "Tops: " + topsCount + " products, Value: " + topsValue + "\n";
+    report += "Bottoms: " + bottomsCount + " products, Value: " + bottomsValue + "\n";
+    report += "Outerwear: " + outerwearCount + " products, Value: " + outerwearValue + "\n";
+
+    report += "\n===== LOW-STOCK PRODUCTS =====\n";
+
+    ArrayList<Product> lowStockProducts = getLowStockProducts();
+
+    if (lowStockProducts.isEmpty()) {
+        report += "No low-stock products.\n";
+    } else {
+        for (Product product : lowStockProducts) {
+            report += "ID: " + product.getId()
+                    + ", Name: " + product.getName()
+                    + ", Quantity: " + product.getQuantity()
+                    + ", Reorder Level: " + product.getReorderLevel() + "\n";
+        }
+    }
+
+    return report;
 }
-}
+    }
