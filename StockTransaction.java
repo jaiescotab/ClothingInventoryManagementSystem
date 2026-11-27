@@ -1,11 +1,13 @@
+import java.time.LocalDateTime;
+
 public class StockTransaction {
 
     private String transactionType;
     private String productId;
     private int quantity;
-    private String timestamp;
+    private LocalDateTime timestamp;
 
-    public StockTransaction(String transactionType, String productId, int quantity, String timestamp) {
+    public StockTransaction(String transactionType, String productId, int quantity, LocalDateTime timestamp) {
 
         setTransactionType(transactionType);
         setProductId(productId);
@@ -17,10 +19,10 @@ public class StockTransaction {
     }
     public void setTransactionType(String transactionType) {
 
-        if (transactionType != null && !transactionType.isBlank()) {
+        if (transactionType != null && (transactionType.equalsIgnoreCase("Stock In") || transactionType.equalsIgnoreCase("Stock Out"))) {
             this.transactionType = transactionType;
         } else {
-            throw new IllegalArgumentException("Transaction type cannot be empty.");
+            throw new IllegalArgumentException("Transaction type must be Stock In or Stock Out.");
         }
     }
     public String getProductId() {
@@ -42,17 +44,18 @@ public class StockTransaction {
         if (quantity > 0) {
             this.quantity = quantity;
         } else {
-            throw new IllegalArgumentException("Quantity must be greater than zero."); }
+            throw new IllegalArgumentException("Quantity must be greater than zero.");
         }
-        public String getTimestamp() {
-    return timestamp;
-}
-public void setTimestamp(String timestamp) {
-
-    if (timestamp != null && !timestamp.isBlank()) {
-        this.timestamp = timestamp;
-    } else {
-        throw new IllegalArgumentException("Timestamp cannot be empty.");
     }
+       public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+    public void setTimestamp(LocalDateTime timestamp) {
+
+        if (timestamp != null) {
+            this.timestamp = timestamp;
+        } else {
+            throw new IllegalArgumentException("Timestamp cannot be null.");
+        }
     }
 }

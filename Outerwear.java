@@ -1,25 +1,46 @@
+
 public class Outerwear extends Product {
 
-    private String material;
+    private String size;
     private String color;
+    private String garmentType;
 
-    public Outerwear(String id, String name, double unitPrice, int quantity, int reorderLevel, String material, String color) {
+    public Outerwear(String id, String name, double unitPrice, int quantity, int reorderLevel, String size, String color, String garmentType) {
         super(id, name, unitPrice, quantity, reorderLevel);
 
-        setMaterial(material);
+        setSize(size);
         setColor(color);
+        setGarmentType(garmentType);
     }
-    public String getMaterial() {
-        return material;
+    public String getSize() {
+        return size;
     }
-    public void setMaterial(String material) {
-        this.material = material;
+    public void setSize(String size) {
+        if (size != null && !size.isBlank()) {
+            this.size = size;
+        } else {
+            throw new IllegalArgumentException("Size cannot be null or blank.");
+        }
     }
     public String getColor() {
         return color;
     }
     public void setColor(String color) {
-        this.color = color;
+        if (color != null && !color.isBlank()) {
+            this.color = color;
+        } else {
+            throw new IllegalArgumentException("Color cannot be null or blank.");
+        }
+    }
+    public String getGarmentType() {
+        return garmentType;
+    }
+    public void setGarmentType(String garmentType) {
+        if (garmentType != null && !garmentType.isBlank()) {
+            this.garmentType = garmentType;
+        } else {
+            throw new IllegalArgumentException("Garment type cannot be null or blank.");
+        }
     }
     @Override
     public String getCategory() {
@@ -27,6 +48,6 @@ public class Outerwear extends Product {
     }
     @Override
     public String getProductInfo() {
-        return "Material: " + material + ", Color: " + color;
+        return "Size: " + size + ", Color: " + color + ", Garment Type: " + garmentType;
     }
 }

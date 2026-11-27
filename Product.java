@@ -38,11 +38,11 @@ public abstract class Product {
         return unitPrice;
     }
     public void setUnitPrice(double unitPrice) {
-        if (unitPrice >= 0) {
-            this.unitPrice = unitPrice;
-        } else {
-            throw new IllegalArgumentException("Unit price cannot be negative.");
-        }
+        if (Double.isFinite(unitPrice) && unitPrice >= 0) {
+           this.unitPrice = unitPrice;
+}       else {
+    throw new IllegalArgumentException("Unit price must be a valid non-negative number.");
+}
     }
     public int getQuantity() {
         return quantity;
