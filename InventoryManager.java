@@ -55,7 +55,8 @@ public class InventoryManager {
             new StockTransaction(
                 "Stock In",
                 id,
-                quantity
+                quantity,
+                java.time.LocalDateTime.now().toString()
             )
         );
         return true;
@@ -76,7 +77,8 @@ public class InventoryManager {
             new StockTransaction(
                 "Stock Out",
                 id,
-                quantity
+                quantity,
+                java.time.LocalDateTime.now().toString()
             )
         );
         return true;
