@@ -1,22 +1,19 @@
 public class Bottoms extends Product {
 
-    private String size;
+    private String waistSize;
     private String color;
 
-    public Bottoms(String id, String name, double unitPrice,
-                   int quantity, int reorderLevel,
-                   String size, String color) {
+    public Bottoms(String id, String name, double unitPrice, int quantity, int reorderLevel, String waistSize, String color) {
+           super(id, name, unitPrice, quantity, reorderLevel);
 
-        super(id, name, unitPrice, quantity, reorderLevel);
-
-        setSize(size);
+        setWaistSize(waistSize);
         setColor(color);
     }
-    public String getSize() {
-        return size;
+    public String getWaistSize() {
+        return waistSize;
     }
-    public void setSize(String size) {
-        this.size = size;
+    public void setWaistSize(String waistSize) {
+        this.waistSize = waistSize;
     }
     public String getColor() {
         return color;
@@ -30,6 +27,6 @@ public class Bottoms extends Product {
     }
     @Override
     public String getProductInfo() {
-        return size + ", " + color;
+        return "Waist Size: " + waistSize + ", Color: " + color;
     }
 }

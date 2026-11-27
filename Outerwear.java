@@ -1,22 +1,19 @@
 public class Outerwear extends Product {
 
-    private String size;
+    private String material;
     private String color;
 
-    public Outerwear(String id, String name, double unitPrice,
-                   int quantity, int reorderLevel,
-                   String size, String color) {
-
+    public Outerwear(String id, String name, double unitPrice, int quantity, int reorderLevel, String material, String color) {
         super(id, name, unitPrice, quantity, reorderLevel);
 
-        setSize(size);
+        setMaterial(material);
         setColor(color);
     }
-    public String getSize() {
-        return size;
+    public String getMaterial() {
+        return material;
     }
-    public void setSize(String size) {
-        this.size = size;
+    public void setMaterial(String material) {
+        this.material = material;
     }
     public String getColor() {
         return color;
@@ -26,10 +23,10 @@ public class Outerwear extends Product {
     }
     @Override
     public String getCategory() {
-        return "Outwear";
+        return "Outerwear";
     }
     @Override
     public String getProductInfo() {
-        return size + ", " + color;
+        return "Material: " + material + ", Color: " + color;
     }
 }

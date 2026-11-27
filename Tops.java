@@ -3,8 +3,7 @@ public class Tops extends Product {
     private String size;
     private String color;
 
-    public Tops(String id, String name, double unitPrice, int quantity, int reorderLevel, String size, String color) {
-
+        public Tops(String id, String name, double unitPrice, int quantity, int reorderLevel, String size, String color) {
         super(id, name, unitPrice, quantity, reorderLevel);
 
         setSize(size);
@@ -28,6 +27,6 @@ public class Tops extends Product {
     }
     @Override
     public String getProductInfo() {
-        return size + ", " + color;
+        return "Size: " + size + ", Color: " + color;
     }
 }
