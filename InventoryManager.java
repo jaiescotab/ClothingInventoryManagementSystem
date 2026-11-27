@@ -64,7 +64,7 @@ public class InventoryManager {
 }
    public boolean stockOut(String id, int quantity) {
 
-    Product product = findProductById(id);
+    Product product =findProductById(id);
 
     if (product != null &&
         product.getQuantity() >= quantity) {

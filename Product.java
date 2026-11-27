@@ -18,7 +18,6 @@ public abstract class Product {
         return id;
     }
     public void setId(String id) {
-
         if (id != null && !id.isBlank()) {
             this.id = id;
         } else {
@@ -29,7 +28,6 @@ public abstract class Product {
         return name;
     }
     public void setName(String name) {
-
         if (name != null && !name.isBlank()) {
             this.name = name;
         } else {
@@ -40,7 +38,6 @@ public abstract class Product {
         return unitPrice;
     }
     public void setUnitPrice(double unitPrice) {
-
         if (unitPrice >= 0) {
             this.unitPrice = unitPrice;
         } else {
@@ -51,7 +48,6 @@ public abstract class Product {
         return quantity;
     }
     public void setQuantity(int quantity) {
-
         if (quantity >= 0) {
             this.quantity = quantity;
         } else {
@@ -62,7 +58,6 @@ public abstract class Product {
         return reorderLevel;
     }
     public void setReorderLevel(int reorderLevel) {
-
         if (reorderLevel >= 0) {
             this.reorderLevel = reorderLevel;
         } else {
