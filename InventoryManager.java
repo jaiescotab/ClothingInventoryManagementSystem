@@ -42,14 +42,15 @@ public class InventoryManager {
     public void addTransaction(StockTransaction transaction) {
         transactions.add(transaction);
     }
-    public boolean stockIn(String id, int quantity) {
+   public boolean stockIn(String id, int quantity) {
 
     Product product = findProductById(id);
 
     if (product != null) {
 
-        product.stockIn(quantity);
-
+        product.setQuantity(
+            product.getQuantity() + quantity
+        );
         addTransaction(
             new StockTransaction(
                 "Stock In",
@@ -61,12 +62,16 @@ public class InventoryManager {
     }
     return false;
 }
-    public boolean stockOut(String id, int quantity) {
+   public boolean stockOut(String id, int quantity) {
 
     Product product = findProductById(id);
 
-    if (product != null && product.stockOut(quantity)) {
+    if (product != null &&
+        product.getQuantity() >= quantity) {
 
+        product.setQuantity(
+            product.getQuantity() - quantity
+        );
         addTransaction(
             new StockTransaction(
                 "Stock Out",
@@ -77,5 +82,17 @@ public class InventoryManager {
         return true;
     }
     return false;
+}
+   public ArrayList<Product> getLowStockProducts() {
+
+    ArrayList<Product> lowStockProducts = new ArrayList<>();
+
+    for (Product product : products) {
+
+        if (product.getQuantity() <= product.getReorderLevel()) {
+            lowStockProducts.add(product);
+        }
+    }
+    return lowStockProducts;
 }
 }
