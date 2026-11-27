@@ -197,6 +197,15 @@ public class InventoryManager {
         }
         return lowStockProducts;
     }
+    private int calculateTotalUnits(int index) {
+    // Base case
+    if (index >= products.size()) {
+        return 0;
+    }
+    // Recursive case
+    return products.get(index).getQuantity()
+            + calculateTotalUnits(index + 1);
+}
     public void sortByName(boolean ascending) {
     for (int i = 0; i < products.size() - 1; i++) {
         for (int j = i + 1; j < products.size(); j++) {
@@ -241,7 +250,7 @@ public void sortByPrice(boolean ascending) {
         public String generateSummaryReport() {
 
     int totalProducts = products.size();
-    int totalUnits = 0;
+    int totalUnits = calculateTotalUnits(0);
     double totalInventoryValue = 0;
 
     int topsCount = 0;
@@ -253,8 +262,6 @@ public void sortByPrice(boolean ascending) {
     double outerwearValue = 0;
 
     for (Product product : products) {
-
-        totalUnits += product.getQuantity();
 
         double productValue = product.getUnitPrice() * product.getQuantity();
 
