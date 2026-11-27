@@ -9,7 +9,29 @@ public class InventoryManager {
 
         products = new ArrayList<>();
         transactions = new ArrayList<>();
+
+        loadSampleData();
     }
+    public void loadSampleData() {
+
+    // TOPS
+    products.add(new Tops("T001", "Basic T-Shirt", 299.00, 20, 5, "M", "White", "Short Sleeve"));
+    products.add(new Tops("T002", "Polo Shirt", 450.00, 15, 5, "L", "Black", "Short Sleeve"));
+    products.add(new Tops("T003", "Crop Top", 350.00, 12, 4, "XS", "Pink", "Sleeveless"));
+    products.add(new Tops("T004", "Long Sleeve Blouse", 550.00, 8, 3, "S", "Blue", "Long Sleeve"));
+
+    // BOTTOMS
+    products.add(new Bottoms("B001", "Straight Jeans", 899.00, 10, 3, "27", "Blue", "Full Length"));
+    products.add(new Bottoms("B002", "Cargo Pants", 750.00, 14, 4, "28", "Black", "Full Length"));
+    products.add(new Bottoms("B003", "Denim Shorts", 499.00, 18, 5, "26", "Light Blue", "Short"));
+    products.add(new Bottoms("B004", "Wide Leg Trousers", 799.00, 7, 3, "30", "Beige", "Full Length"));
+
+    // OUTERWEAR
+    products.add(new Outerwear("O001", "Denim Jacket", 1200.00, 6, 2, "M", "Blue", "Jacket"));
+    products.add(new Outerwear("O002", "Hoodie", 950.00, 10, 3, "L", "Gray", "Hoodie"));
+    products.add(new Outerwear("O003", "Cardigan", 850.00, 9, 3, "S", "Cream", "Cardigan"));
+    products.add(new Outerwear("O004", "Sweater", 1100.00, 5, 2, "L", "Black", "Sweater"));
+}
     public ArrayList<Product> getProducts() {
         return new ArrayList<>(products);
     }
@@ -17,13 +39,11 @@ public class InventoryManager {
         return new ArrayList<>(transactions);
     }
    public Product findProductById(String id) {
-
     if (id == null || id.isBlank()) {
         throw new IllegalArgumentException("Product ID cannot be empty.");
     }
 
     for (Product product : products) {
-
         if (product.getId().equals(id)) {
             return product;
         }
@@ -39,7 +59,6 @@ public class InventoryManager {
     ArrayList<Product> searchResults = new ArrayList<>();
 
     for (Product product : products) {
-
         if (product.getName().toLowerCase().contains(name.toLowerCase())) {
             searchResults.add(product);
         }
@@ -47,28 +66,33 @@ public class InventoryManager {
     return searchResults;
     }
     public void addProduct(Product product) {
+    if (product == null) {
+        throw new IllegalArgumentException("Product cannot be null.");
+    } else if (findProductById(product.getId()) != null) {
+        throw new IllegalArgumentException("Product ID already exists.");
+    } else {
+        products.add(product);
 
-        if (product == null) {
-            throw new IllegalArgumentException("Product cannot be null.");
-        } else if (findProductById(product.getId()) != null) {
-            throw new IllegalArgumentException("Product ID already exists.");
-        } else {
-            products.add(product);
-        }
-    } public boolean updateProduct(String id, Product updatedProduct) {
-
+        addTransaction(
+            new StockTransaction(
+                "Add Product",
+                product.getId(),
+                product.getQuantity(),
+                java.time.LocalDateTime.now()
+            )
+        );
+    }
+    }
+    public boolean updateProduct(String id, Product updatedProduct) {
     if (updatedProduct == null) {
         throw new IllegalArgumentException("Updated product cannot be null.");
     }
 
     Product existingProduct = findProductById(id);
-
     if (existingProduct != null) {
-
         if (!existingProduct.getId().equalsIgnoreCase(updatedProduct.getId())) {
             throw new IllegalArgumentException("Product ID cannot be changed.");
         }
-
         if (!existingProduct.getCategory().equals(updatedProduct.getCategory())) {
             throw new IllegalArgumentException("Product category cannot be changed.");
         }
@@ -77,19 +101,36 @@ public class InventoryManager {
         int index = products.indexOf(existingProduct);
         products.set(index, updatedProduct);
 
+        addTransaction(
+            new StockTransaction(
+                "Update Product",
+                updatedProduct.getId(),
+                updatedProduct.getQuantity(),
+                java.time.LocalDateTime.now()
+            )
+        );
         return true;
     }
     return false;
 }
     public boolean deleteProduct(String id) {
 
-        Product product = findProductById(id);
-        if (product != null) {
-            products.remove(product);
-            return true;
-        }
-        return false;
+    Product product = findProductById(id);
+    if (product != null) {
+        products.remove(product);
+
+        addTransaction(
+            new StockTransaction(
+                "Delete Product",
+                product.getId(),
+                product.getQuantity(),
+                java.time.LocalDateTime.now()
+            )
+        );
+        return true;
     }
+    return false;
+}
     public void addTransaction(StockTransaction transaction) {
 
         if (transaction == null) {
