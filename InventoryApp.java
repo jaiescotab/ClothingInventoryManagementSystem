@@ -374,7 +374,6 @@ public class InventoryApp {
                     } else {
                         inventory.sortByQuantity(ascending);
                     }
-
                     System.out.println("\nProducts sorted successfully!");
 
                     for (Product product : inventory.getProducts()) {
@@ -389,6 +388,28 @@ public class InventoryApp {
                     }
                     break;
                 }
+                 case 10:
+                    System.out.println(inventory.generateSummaryReport());
+                    break;
+
+                 case 11:
+                    System.out.println("\n===== TRANSACTION HISTORY =====");
+
+                    ArrayList<StockTransaction> transactions = inventory.getTransactions();
+
+                    if (transactions.isEmpty()) {
+                        System.out.println("No transaction history found.");
+                    } else {
+                        for (StockTransaction transaction : transactions) {
+                            System.out.println("\n-------------------------");
+                            System.out.println("Transaction Type: " + transaction.getTransactionType());
+                            System.out.println("Product ID: " + transaction.getProductId());
+                            System.out.println("Quantity: " + transaction.getQuantity());
+                            System.out.println("Timestamp: " + transaction.getTimestamp());
+                        }
+                    }
+                    break;
+
                 case 0:
                     System.out.println("Exiting Inventory Management System...");
                     break;
@@ -442,7 +463,7 @@ public class InventoryApp {
             }
         }
     }
-    private static int getValidChoice(Scanner input, int minimum, int maximum) {
+        private static int getValidChoice(Scanner input, int minimum, int maximum) {
         while (true) {
             try {
                 int choice = Integer.parseInt(input.nextLine());
@@ -452,8 +473,10 @@ public class InventoryApp {
                 }
                 System.out.println("Invalid choice. Please enter a number from "
                         + minimum + " to " + maximum + ".");
+                System.out.print("Enter your choice: ");
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a number.");
+                System.out.print("Enter your choice: ");
             }
         }
     }
