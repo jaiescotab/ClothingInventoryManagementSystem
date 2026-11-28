@@ -21,10 +21,11 @@ public class InventoryApp {
             System.out.println("9. Sort Products");
             System.out.println("10. Generate Summary Report");
             System.out.println("11. View Transaction History");
+            System.out.println("12. Advanced Search and Filters");
             System.out.println("0. Exit");
             System.out.print("Enter your choice: ");
 
-            choice = getValidChoice(input, 0, 11);
+            choice = getValidChoice(input, 0, 12);
 
             switch (choice) {
 
@@ -408,6 +409,85 @@ public class InventoryApp {
                         }
                     }
                     break;
+                    case 12:
+    System.out.println("\n===== ADVANCED SEARCH AND FILTERS =====");
+
+    System.out.println("1. All Categories");
+    System.out.println("2. Tops");
+    System.out.println("3. Bottoms");
+    System.out.println("4. Outerwear");
+
+    int categoryChoice = getValidChoice(input, 1, 4);
+    String category = "";
+
+    switch (categoryChoice) {
+        case 1:
+            category = "All";
+            break;
+        case 2:
+            category = "Tops";
+            break;
+        case 3:
+            category = "Bottoms";
+            break;
+        case 4:
+            category = "Outerwear";
+            break;
+    }
+
+    System.out.print("Minimum Price: ");
+    double minPrice = getValidPrice(input);
+
+    System.out.print("Maximum Price: ");
+    double maxPrice = getValidPrice(input);
+
+    if (maxPrice < minPrice) {
+        System.out.println("Maximum price cannot be lower than minimum price.");
+        break;
+    }
+
+    System.out.println("\nStock Status:");
+    System.out.println("1. All");
+    System.out.println("2. In Stock");
+    System.out.println("3. Low Stock");
+    System.out.println("4. Out of Stock");
+
+    int stockChoice = getValidChoice(input, 1, 4);
+    String stockStatus = "";
+
+    switch (stockChoice) {
+        case 1:
+            stockStatus = "All";
+            break;
+        case 2:
+            stockStatus = "In Stock";
+            break;
+        case 3:
+            stockStatus = "Low Stock";
+            break;
+        case 4:
+            stockStatus = "Out of Stock";
+            break;
+    }
+
+    ArrayList<Product> filteredProducts =
+            inventory.filterProducts(category, minPrice, maxPrice, stockStatus);
+
+    if (filteredProducts.isEmpty()) {
+        System.out.println("No matching products found.");
+    } else {
+        System.out.println("\n===== FILTERED PRODUCTS =====");
+
+        for (Product product : filteredProducts) {
+            System.out.println("\nID: " + product.getId());
+            System.out.println("Name: " + product.getName());
+            System.out.println("Category: " + product.getCategory());
+            System.out.println("Price: " + product.getUnitPrice());
+            System.out.println("Quantity: " + product.getQuantity());
+            System.out.println("Details: " + product.getProductInfo());
+        }
+    }
+    break;
                           case 0:
                     inventory.saveData();
                     System.out.println("Exiting Inventory Management System...");

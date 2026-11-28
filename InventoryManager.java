@@ -383,4 +383,39 @@ public void saveData() {
         System.out.println("Unable to save inventory data.");
     }
 }
+public ArrayList<Product> filterProducts(
+        String category, double minPrice, double maxPrice, String stockStatus) {
+
+    ArrayList<Product> filteredProducts = new ArrayList<>();
+
+    for (Product product : products) {
+
+        boolean matchesCategory = category.equalsIgnoreCase("All")
+                || product.getCategory().equalsIgnoreCase(category);
+
+        boolean matchesPrice = product.getUnitPrice() >= minPrice
+                && product.getUnitPrice() <= maxPrice;
+
+        boolean matchesStock;
+
+        if (stockStatus.equalsIgnoreCase("All")) {
+            matchesStock = true;
+        } else if (stockStatus.equalsIgnoreCase("In Stock")) {
+            matchesStock = product.getQuantity() > product.getReorderLevel();
+        } else if (stockStatus.equalsIgnoreCase("Low Stock")) {
+            matchesStock = product.getQuantity() > 0
+                    && product.getQuantity() <= product.getReorderLevel();
+        } else if (stockStatus.equalsIgnoreCase("Out of Stock")) {
+            matchesStock = product.getQuantity() == 0;
+        } else {
+            throw new IllegalArgumentException("Invalid stock status.");
+        }
+
+        if (matchesCategory && matchesPrice && matchesStock) {
+            filteredProducts.add(product);
+        }
+    }
+
+    return filteredProducts;
+}
 }
