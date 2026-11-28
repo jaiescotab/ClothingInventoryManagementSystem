@@ -1,0 +1,13 @@
+INVENTORY_DATA
+P|Tops|T001|Basic T-Shirt|299.0|20|5|M|White|Short Sleeve
+P|Tops|T002|Polo Shirt|450.0|15|5|L|Black|Short Sleeve
+P|Tops|T003|Crop Top|350.0|12|4|XS|Pink|Sleeveless
+P|Tops|T004|Long Sleeve Blouse|550.0|8|3|S|Blue|Long Sleeve
+P|Bottoms|B001|Straight Jeans|899.0|10|3|27|Blue|Full Length
+P|Bottoms|B002|Cargo Pants|750.0|14|4|28|Black|Full Length
+P|Bottoms|B003|Denim Shorts|499.0|18|5|26|Light Blue|Short
+P|Bottoms|B004|Wide Leg Trousers|799.0|7|3|30|Beige|Full Length
+P|Outerwear|O001|Denim Jacket|1200.0|6|2|M|Blue|Jacket
+P|Outerwear|O002|Hoodie|950.0|10|3|L|Gray|Hoodie
+P|Outerwear|O003|Cardigan|850.0|9|3|S|Cream|Cardigan
+P|Outerwear|O004|Sweater|1100.0|5|2|L|Black|Sweater

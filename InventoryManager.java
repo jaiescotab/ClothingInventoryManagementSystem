@@ -1,4 +1,8 @@
 import java.util.ArrayList;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
 
 public class InventoryManager {
 
@@ -6,11 +10,63 @@ public class InventoryManager {
     private ArrayList<StockTransaction> transactions;
 
     public InventoryManager() {
-
         products = new ArrayList<>();
         transactions = new ArrayList<>();
 
-        loadSampleData();
+        if (!loadData()) {
+            loadSampleData();
+        }
+    }
+    private boolean loadData() {
+        File file = new File("inventory.txt");
+        if (!file.exists()) {
+            return false;
+        }
+        try (java.util.Scanner fileInput = new java.util.Scanner(file)) {
+            if (!fileInput.hasNextLine() ||
+                    !fileInput.nextLine().equals("INVENTORY_DATA")) {
+                return false;
+            }
+
+            while (fileInput.hasNextLine()) {
+                String[] data = fileInput.nextLine().split("\\|", -1);
+
+                try {
+                    if (data[0].equals("P") && data.length == 10) {
+                        String id = data[2];
+                        String name = data[3];
+                        double price = Double.parseDouble(data[4]);
+                        int quantity = Integer.parseInt(data[5]);
+                        int reorderLevel = Integer.parseInt(data[6]);
+
+                        if (data[1].equals("Tops")) {
+                            products.add(new Tops(id, name, price, quantity,
+                                    reorderLevel, data[7], data[8], data[9]));
+                        } else if (data[1].equals("Bottoms")) {
+                            products.add(new Bottoms(id, name, price, quantity,
+                                    reorderLevel, data[7], data[8], data[9]));
+                        } else if (data[1].equals("Outerwear")) {
+                            products.add(new Outerwear(id, name, price, quantity,
+                                    reorderLevel, data[7], data[8], data[9]));
+                        }
+                    } else if (data[0].equals("T") && data.length == 5) {
+                        transactions.add(new StockTransaction(
+                                data[1],
+                                data[2],
+                                Integer.parseInt(data[3]),
+                                LocalDateTime.parse(data[4])
+                        ));
+                    }
+                } catch (Exception e) {
+                    System.out.println("A saved record could not be loaded.");
+                }
+            }
+            return true;
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to read saved inventory.");
+            return false;
+        }
+
     }
     public void loadSampleData() {
 
@@ -278,7 +334,6 @@ public void sortByPrice(boolean ascending) {
             outerwearValue += productValue;
         }
     }
-
     String report = "";
 
     report += "\n===== INVENTORY SUMMARY REPORT =====\n";
@@ -305,7 +360,45 @@ public void sortByPrice(boolean ascending) {
                     + ", Reorder Level: " + product.getReorderLevel() + "\n";
         }
     }
-
     return report;
 }
+    public void saveData() {
+        try (PrintWriter writer = new PrintWriter("inventory.txt")) {
+            writer.println("INVENTORY_DATA");
+
+            for (Product product : products) {
+                String details = "";
+
+                if (product.getCategory().equals("Tops")) {
+                    Tops item = (Tops) product;
+                    details = item.getSize() + "|" + item.getColor()
+                            + "|" + item.getSleeveType();
+                } else if (product.getCategory().equals("Bottoms")) {
+                    Bottoms item = (Bottoms) product;
+                    details = item.getWaistSize() + "|" + item.getColor()
+                            + "|" + item.getLength();
+                } else if (product.getCategory().equals("Outerwear")) {
+                    Outerwear item = (Outerwear) product;
+                    details = item.getSize() + "|" + item.getColor()
+                            + "|" + item.getGarmentType();
+                }
+                writer.println("P|" + product.getCategory()
+                        + "|" + product.getId()
+                        + "|" + product.getName()
+                        + "|" + product.getUnitPrice()
+                        + "|" + product.getQuantity()
+                        + "|" + product.getReorderLevel()
+                        + "|" + details);
+            }
+            for (StockTransaction transaction : transactions) {
+                writer.println("T|" + transaction.getTransactionType()
+                        + "|" + transaction.getProductId()
+                        + "|" + transaction.getQuantity()
+                        + "|" + transaction.getTimestamp());
+            }
+            System.out.println("Inventory and transaction history saved successfully!");
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to save inventory data.");
+        }
+    }
     }

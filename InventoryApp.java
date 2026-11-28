@@ -409,11 +409,10 @@ public class InventoryApp {
                         }
                     }
                     break;
-
-                case 0:
+                          case 0:
+                    inventory.saveData();
                     System.out.println("Exiting Inventory Management System...");
                     break;
-
                 default:
                     System.out.println("This feature is not implemented yet.");
             }
