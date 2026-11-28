@@ -120,6 +120,7 @@ while (true) {
     int reorderLevel=0;
 
 while (true) {
+
     try {
         System.out.print("Enter Reorder Level: ");
         reorderLevel = Integer.parseInt(input.nextLine());
@@ -139,8 +140,37 @@ System.out.println("Product Name: " + name);
 System.out.println("Unit Price: " + unitPrice);
 System.out.println("Quantity: " + quantity);
 System.out.println("Reorder Level: " + reorderLevel);
- break;
+String size;
+String color;
+String sleeveType;
+System.out.print("Enter Size: ");
+size = input.nextLine();
+while (true) {
+    System.out.print("Enter Color: ");
+    color = input.nextLine();
 
+    if (!color.isBlank() && !color.matches("[0-9]+")) {
+        break;
+    } else {
+        System.out.println("Invalid color. Please enter text.");
+    }
+}
+while (true) {
+    System.out.print("Enter Sleeve Type: ");
+    sleeveType = input.nextLine();
+
+    if (!sleeveType.isBlank() && !sleeveType.matches("[0-9]+")) {
+        break;
+    } else {
+        System.out.println("Invalid sleeve type. Please enter text.");
+    }
+}
+Tops product = new Tops(id, name, unitPrice, quantity,
+                        reorderLevel, size, color, sleeveType);
+inventory.addProduct(product);
+System.out.println("Product added successfully!");
+System.out.println("\nTotal Products: " + inventory.getProducts().size());
+ break;
 
     case 0:
         System.out.println("Exiting Inventory Management System...");
