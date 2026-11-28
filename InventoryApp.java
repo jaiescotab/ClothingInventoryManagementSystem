@@ -190,7 +190,6 @@ public class InventoryApp {
                         Product updatedProduct = null;
 
                         if (existingProduct.getCategory().equals("Tops")) {
-                            Tops existingTops = (Tops) existingProduct;
 
                             String size = getNonEmptyInput(input, "Enter New Size: ");
                             String color = getNonEmptyInput(input, "Enter New Color: ");

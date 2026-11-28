@@ -149,9 +149,6 @@ public class InventoryManager {
         if (!existingProduct.getId().equalsIgnoreCase(updatedProduct.getId())) {
             throw new IllegalArgumentException("Product ID cannot be changed.");
         }
-        if (!existingProduct.getCategory().equals(updatedProduct.getCategory())) {
-            throw new IllegalArgumentException("Product category cannot be changed.");
-        }
         updatedProduct.setQuantity(existingProduct.getQuantity());
 
         int index = products.indexOf(existingProduct);
@@ -362,43 +359,28 @@ public void sortByPrice(boolean ascending) {
     }
     return report;
 }
-    public void saveData() {
-        try (PrintWriter writer = new PrintWriter("inventory.txt")) {
-            writer.println("INVENTORY_DATA");
+public void saveData() {
+    try (PrintWriter writer = new PrintWriter("inventory.txt")) {
+        writer.println("INVENTORY_DATA");
 
-            for (Product product : products) {
-                String details = "";
-
-                if (product.getCategory().equals("Tops")) {
-                    Tops item = (Tops) product;
-                    details = item.getSize() + "|" + item.getColor()
-                            + "|" + item.getSleeveType();
-                } else if (product.getCategory().equals("Bottoms")) {
-                    Bottoms item = (Bottoms) product;
-                    details = item.getWaistSize() + "|" + item.getColor()
-                            + "|" + item.getLength();
-                } else if (product.getCategory().equals("Outerwear")) {
-                    Outerwear item = (Outerwear) product;
-                    details = item.getSize() + "|" + item.getColor()
-                            + "|" + item.getGarmentType();
-                }
-                writer.println("P|" + product.getCategory()
-                        + "|" + product.getId()
-                        + "|" + product.getName()
-                        + "|" + product.getUnitPrice()
-                        + "|" + product.getQuantity()
-                        + "|" + product.getReorderLevel()
-                        + "|" + details);
-            }
-            for (StockTransaction transaction : transactions) {
-                writer.println("T|" + transaction.getTransactionType()
-                        + "|" + transaction.getProductId()
-                        + "|" + transaction.getQuantity()
-                        + "|" + transaction.getTimestamp());
-            }
-            System.out.println("Inventory and transaction history saved successfully!");
-        } catch (FileNotFoundException e) {
-            System.out.println("Unable to save inventory data.");
+        for (Product product : products) {
+            writer.println("P|" + product.getCategory()
+                    + "|" + product.getId()
+                    + "|" + product.getName()
+                    + "|" + product.getUnitPrice()
+                    + "|" + product.getQuantity()
+                    + "|" + product.getReorderLevel()
+                    + "|" + product.getStorageData());
         }
+        for (StockTransaction transaction : transactions) {
+            writer.println("T|" + transaction.getTransactionType()
+                    + "|" + transaction.getProductId()
+                    + "|" + transaction.getQuantity()
+                    + "|" + transaction.getTimestamp());
+        }
+        System.out.println("Inventory and transaction history saved successfully!");
+    } catch (FileNotFoundException e) {
+        System.out.println("Unable to save inventory data.");
     }
-    }
+}
+}

@@ -50,4 +50,8 @@ public class Outerwear extends Product {
     public String getProductInfo() {
         return "Size: " + size + ", Color: " + color + ", Garment Type: " + garmentType;
     }
+    @Override
+    public String getStorageData() {
+        return size + "|" + color + "|" + garmentType;
+}
 }

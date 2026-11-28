@@ -50,4 +50,8 @@ public class Tops extends Product {
     public String getProductInfo() {
         return "Size: " + size + ", Color: " + color + ", Sleeve Type: " + sleeveType;
     }
+    @Override
+    public String getStorageData() {
+        return size + "|" + color + "|" + sleeveType;
+}
 }

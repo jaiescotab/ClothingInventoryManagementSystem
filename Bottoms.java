@@ -50,4 +50,8 @@ public class Bottoms extends Product {
     public String getProductInfo() {
         return "Waist Size: " + waistSize + ", Color: " + color + ", Length: " + length;
     }
+    @Override
+    public String getStorageData() {
+        return waistSize + "|" + color + "|" + length;
+}
 }

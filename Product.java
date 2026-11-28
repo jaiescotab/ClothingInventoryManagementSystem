@@ -66,4 +66,7 @@ public abstract class Product {
     }
     public abstract String getCategory();
     public abstract String getProductInfo();
+    public String getStorageData() {
+    return getProductInfo();
+}
 }
