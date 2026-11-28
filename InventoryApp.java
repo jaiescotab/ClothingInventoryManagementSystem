@@ -1,4 +1,3 @@
-
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -45,10 +44,8 @@ public class InventoryApp {
                         if (inventory.findProductById(id) == null) {
                             break;
                         }
-
                         System.out.println("Product ID already exists. Please try another ID.");
                     }
-
                     String name = getNonEmptyInput(input, "Enter Product Name: ");
                     double unitPrice = getValidPrice(input);
                     int quantity = getValidNumber(input, "Enter Quantity: ");
@@ -69,7 +66,6 @@ public class InventoryApp {
                             inventory.addProduct(product);
                             break;
                         }
-
                         case 2: {
                             System.out.println("\n===== BOTTOMS DETAILS =====");
 
@@ -83,7 +79,6 @@ public class InventoryApp {
                             inventory.addProduct(product);
                             break;
                         }
-
                         case 3: {
                             System.out.println("\n===== OUTERWEAR DETAILS =====");
 
@@ -103,7 +98,6 @@ public class InventoryApp {
                     System.out.println("Total Products: " + inventory.getProducts().size());
                     break;
                 }
-
                 case 2:
                     System.out.println("\n===== ALL PRODUCTS =====");
 
@@ -146,7 +140,6 @@ public class InventoryApp {
                         } else {
                             System.out.println("No product found with that ID.");
                         }
-
                     } else {
                         String name = getNonEmptyInput(input, "Enter Product Name: ");
                         ArrayList<Product> foundProducts =
@@ -171,7 +164,6 @@ public class InventoryApp {
                     }
                     break;
                 }
-
                 case 4: {
                     System.out.println("\n===== UPDATE PRODUCT =====");
 
@@ -189,7 +181,6 @@ public class InventoryApp {
                         System.out.println("Quantity: " + existingProduct.getQuantity());
                         System.out.println("Reorder Level: " + existingProduct.getReorderLevel());
                         System.out.println("Additional Details: " + existingProduct.getProductInfo());
-
                         System.out.println("\n===== ENTER UPDATED DETAILS =====");
 
                         String name = getNonEmptyInput(input, "Enter New Product Name: ");
@@ -209,10 +200,7 @@ public class InventoryApp {
                                     id, name, unitPrice, existingProduct.getQuantity(),
                                     reorderLevel, size, color, sleeveType
                             );
-
                         } else if (existingProduct.getCategory().equals("Bottoms")) {
-                            Bottoms existingBottoms = (Bottoms) existingProduct;
-
                             String waistSize = getNonEmptyInput(input, "Enter New Waist Size: ");
                             String color = getNonEmptyInput(input, "Enter New Color: ");
                             String length = getNonEmptyInput(input, "Enter New Length: ");
@@ -221,10 +209,7 @@ public class InventoryApp {
                                     id, name, unitPrice, existingProduct.getQuantity(),
                                     reorderLevel, waistSize, color, length
                             );
-
                         } else if (existingProduct.getCategory().equals("Outerwear")) {
-                            Outerwear existingOuterwear = (Outerwear) existingProduct;
-
                             String size = getNonEmptyInput(input, "Enter New Size: ");
                             String color = getNonEmptyInput(input, "Enter New Color: ");
                             String garmentType = getNonEmptyInput(input, "Enter New Garment Type: ");
@@ -234,7 +219,6 @@ public class InventoryApp {
                                     reorderLevel, size, color, garmentType
                             );
                         }
-
                         if (inventory.updateProduct(id, updatedProduct)) {
                             System.out.println("\nProduct updated successfully!");
 
@@ -252,7 +236,123 @@ public class InventoryApp {
                     }
                     break;
                 }
+                case 5: {
+                    System.out.println("\n===== DELETE PRODUCT =====");
 
+                    String id = getNonEmptyInput(input, "Enter Product ID to delete: ");
+                    Product product = inventory.findProductById(id);
+
+                    if (product == null) {
+                        System.out.println("Product not found.");
+                    } else {
+                        System.out.println("\n===== PRODUCT DETAILS =====");
+                        System.out.println("Product ID: " + product.getId());
+                        System.out.println("Product Name: " + product.getName());
+                        System.out.println("Category: " + product.getCategory());
+                        System.out.println("Unit Price: " + product.getUnitPrice());
+                        System.out.println("Quantity: " + product.getQuantity());
+                        System.out.println("Reorder Level: " + product.getReorderLevel());
+                        System.out.println("Additional Details: " + product.getProductInfo());
+
+                        String confirmation;
+                        while (true) {
+                            confirmation = getNonEmptyInput(input,
+                                    "Are you sure you want to delete this product? (Y/N): ");
+                            if (confirmation.equalsIgnoreCase("Y")
+                                    || confirmation.equalsIgnoreCase("N")) {
+                                break;
+                            }
+                            System.out.println("Invalid input. Please enter Y or N.");
+                        }
+                        if (confirmation.equalsIgnoreCase("Y")) {
+                            if (inventory.deleteProduct(id)) {
+                                System.out.println("Product deleted successfully!");
+                                System.out.println("Total Products: " + inventory.getProducts().size());
+                            } else {
+                                System.out.println("Product deletion failed.");
+                            }
+                        } else {
+                            System.out.println("Product deletion cancelled.");
+                        }
+                    }
+                    break;
+                }
+                case 6: {
+                    System.out.println("\n===== STOCK IN =====");
+
+                    String id = getNonEmptyInput(input, "Enter Product ID: ");
+                    Product product = inventory.findProductById(id);
+
+                    if (product == null) {
+                        System.out.println("Product not found.");
+                    } else {
+                        int quantity = getValidNumber(input, "Enter quantity to add: ");
+
+                        while (quantity <= 0) {
+                            System.out.println("Quantity must be greater than zero.");
+                            quantity = getValidNumber(input, "Enter quantity to add: ");
+                        }
+                        if (inventory.stockIn(id, quantity)) {
+                            System.out.println("Stock added successfully!");
+                            System.out.println("Updated Quantity: " + product.getQuantity());
+                        } else {
+                            System.out.println("Stock in failed.");
+                        }
+                    }
+                    break;
+                }
+                case 7: {
+                    System.out.println("\n===== STOCK OUT =====");
+
+                    String id = getNonEmptyInput(input, "Enter Product ID: ");
+                    Product product = inventory.findProductById(id);
+
+                    if (product == null) {
+                        System.out.println("Product not found.");
+                    } else {
+                        int quantity = getValidNumber(input, "Enter quantity to remove: ");
+                        while (quantity <= 0) {
+                            System.out.println("Quantity must be greater than zero.");
+                            quantity = getValidNumber(input, "Enter quantity to remove: ");
+                        }
+
+                        if (quantity > product.getQuantity()) {
+                            System.out.println("Insufficient stock. Available quantity: "
+                                    + product.getQuantity());
+                        } else if (inventory.stockOut(id, quantity)) {
+                            System.out.println("Stock removed successfully!");
+                            System.out.println("Updated Quantity: " + product.getQuantity());
+
+                            if (product.getQuantity() <= product.getReorderLevel()) {
+                                System.out.println("WARNING: Product has reached its reorder level!");
+                            }
+                        } else {
+                            System.out.println("Stock out failed.");
+                        }
+                    }
+                    break;
+                }
+                case 8: {
+                    System.out.println("\n===== LOW-STOCK PRODUCTS =====");
+
+                    ArrayList<Product> lowStockProducts = inventory.getLowStockProducts();
+
+                    if (lowStockProducts.isEmpty()) {
+                        System.out.println("No low-stock products found.");
+                    } else {
+                        for (Product product : lowStockProducts) {
+                            System.out.println("\n-------------------------");
+                            System.out.println("Product ID: " + product.getId());
+                            System.out.println("Product Name: " + product.getName());
+                            System.out.println("Category: " + product.getCategory());
+                            System.out.println("Unit Price: " + product.getUnitPrice());
+                            System.out.println("Quantity: " + product.getQuantity());
+                            System.out.println("Reorder Level: " + product.getReorderLevel());
+                            System.out.println("Additional Details: " + product.getProductInfo());
+                        }
+                    }
+                    break;
+                }
                 case 0:
                     System.out.println("Exiting Inventory Management System...");
                     break;
@@ -260,12 +360,9 @@ public class InventoryApp {
                 default:
                     System.out.println("This feature is not implemented yet.");
             }
-
         } while (choice != 0);
-
         input.close();
     }
-
     private static String getNonEmptyInput(Scanner input, String message) {
         String value;
 
@@ -276,11 +373,9 @@ public class InventoryApp {
             if (!value.isBlank()) {
                 return value;
             }
-
             System.out.println("Input cannot be empty. Please try again.");
         }
     }
-
     private static int getValidNumber(Scanner input, String message) {
         while (true) {
             try {
@@ -290,14 +385,12 @@ public class InventoryApp {
                 if (number >= 0) {
                     return number;
                 }
-
                 System.out.println("Number cannot be negative.");
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a whole number.");
             }
         }
     }
-
     private static double getValidPrice(Scanner input) {
         while (true) {
             try {
@@ -307,14 +400,12 @@ public class InventoryApp {
                 if (Double.isFinite(price) && price >= 0) {
                     return price;
                 }
-
                 System.out.println("Unit price must be a valid non-negative number.");
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a valid number.");
             }
         }
     }
-
     private static int getValidChoice(Scanner input, int minimum, int maximum) {
         while (true) {
             try {
@@ -323,7 +414,6 @@ public class InventoryApp {
                 if (choice >= minimum && choice <= maximum) {
                     return choice;
                 }
-
                 System.out.println("Invalid choice. Please enter a number from "
                         + minimum + " to " + maximum + ".");
             } catch (NumberFormatException e) {
