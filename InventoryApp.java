@@ -353,6 +353,42 @@ public class InventoryApp {
                     }
                     break;
                 }
+                                case 9: {
+                    System.out.println("\n===== SORT PRODUCTS =====");
+                    System.out.println("1. Sort by Name");
+                    System.out.println("2. Sort by Price");
+                    System.out.println("3. Sort by Quantity");
+
+                    int sortChoice = getValidChoice(input, 1, 3);
+
+                    System.out.println("\n1. Ascending");
+                    System.out.println("2. Descending");
+
+                    int orderChoice = getValidChoice(input, 1, 2);
+                    boolean ascending = orderChoice == 1;
+
+                    if (sortChoice == 1) {
+                        inventory.sortByName(ascending);
+                    } else if (sortChoice == 2) {
+                        inventory.sortByPrice(ascending);
+                    } else {
+                        inventory.sortByQuantity(ascending);
+                    }
+
+                    System.out.println("\nProducts sorted successfully!");
+
+                    for (Product product : inventory.getProducts()) {
+                        System.out.println("\n-------------------------");
+                        System.out.println("Product ID: " + product.getId());
+                        System.out.println("Product Name: " + product.getName());
+                        System.out.println("Category: " + product.getCategory());
+                        System.out.println("Unit Price: " + product.getUnitPrice());
+                        System.out.println("Quantity: " + product.getQuantity());
+                        System.out.println("Reorder Level: " + product.getReorderLevel());
+                        System.out.println("Additional Details: " + product.getProductInfo());
+                    }
+                    break;
+                }
                 case 0:
                     System.out.println("Exiting Inventory Management System...");
                     break;
