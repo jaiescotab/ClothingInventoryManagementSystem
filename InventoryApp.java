@@ -23,10 +23,11 @@ public class InventoryApp {
             System.out.println("11. View Transaction History");
             System.out.println("12. Advanced Search and Filters");
             System.out.println("13. Point-of-Sale");
+            System.out.println("14. Supplier Management");
             System.out.println("0. Exit");
             System.out.print("Enter your choice: ");
 
-            choice = getValidChoice(input, 0, 13);
+            choice = getValidChoice(input, 0, 14);
 
             switch (choice) {
 
@@ -488,8 +489,13 @@ public class InventoryApp {
             System.out.println("Details: " + product.getProductInfo());
         }
     }
-    break;case 13:
+    break;
+    case 13:
     pointOfSale(input, inventory);
+    break;
+
+    case 14:
+    supplierManagement(input, inventory);
     break;
                           case 0:
                     inventory.saveData();
@@ -665,5 +671,109 @@ private static void pointOfSale(Scanner input, InventoryManager inventory) {
     System.out.println("Change: " + change);
     System.out.println("=============================");
     System.out.println("Thank you for shopping!");
+}
+private static void supplierManagement(
+        Scanner input, InventoryManager inventory) {
+
+    int choice;
+
+    do {
+        System.out.println("\n===== SUPPLIER MANAGEMENT =====");
+        System.out.println("1. Add Supplier");
+        System.out.println("2. Assign Product to Supplier");
+        System.out.println("3. View Products by Supplier");
+        System.out.println("4. View Restock List by Supplier");
+        System.out.println("0. Back to Main Menu");
+
+        choice = getValidChoice(input, 0, 4);
+
+        switch (choice) {
+
+            case 1: {
+                System.out.println("\n===== ADD SUPPLIER =====");
+
+                String id = getNonEmptyInput(input, "Enter Supplier ID: ");
+                String name = getNonEmptyInput(input, "Enter Supplier Name: ");
+                String contact = getNonEmptyInput(input, "Enter Contact Number: ");
+
+                try {
+                    Supplier supplier = new Supplier(id, name, contact);
+                    inventory.addSupplier(supplier);
+                    System.out.println("Supplier added successfully!");
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                }
+                break;
+            }
+
+            case 2: {
+                System.out.println("\n===== ASSIGN PRODUCT TO SUPPLIER =====");
+
+                String supplierId = getNonEmptyInput(input, "Enter Supplier ID: ");
+                String productId = getNonEmptyInput(input, "Enter Product ID: ");
+
+                try {
+                    inventory.assignProductToSupplier(supplierId, productId);
+                    System.out.println("Product assigned successfully!");
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                }
+                break;
+            }
+
+            case 3: {
+                System.out.println("\n===== VIEW PRODUCTS BY SUPPLIER =====");
+
+                String supplierId = getNonEmptyInput(input, "Enter Supplier ID: ");
+
+                try {
+                    ArrayList<Product> products =
+                            inventory.getProductsBySupplier(supplierId);
+
+                    if (products.isEmpty()) {
+                        System.out.println("No products assigned to this supplier.");
+                    } else {
+                        for (Product product : products) {
+                            System.out.println("\n-------------------------");
+                            System.out.println("Product ID: " + product.getId());
+                            System.out.println("Product Name: " + product.getName());
+                            System.out.println("Category: " + product.getCategory());
+                            System.out.println("Quantity: " + product.getQuantity());
+                        }
+                    }
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                }
+                break;
+            }
+
+            case 4: {
+                System.out.println("\n===== SUPPLIER RESTOCK LIST =====");
+
+                String supplierId = getNonEmptyInput(input, "Enter Supplier ID: ");
+
+                try {
+                    ArrayList<Product> restockList =
+                            inventory.getRestockListBySupplier(supplierId);
+
+                    if (restockList.isEmpty()) {
+                        System.out.println("No products need restocking.");
+                    } else {
+                        for (Product product : restockList) {
+                            System.out.println("\n-------------------------");
+                            System.out.println("Product ID: " + product.getId());
+                            System.out.println("Product Name: " + product.getName());
+                            System.out.println("Current Quantity: " + product.getQuantity());
+                            System.out.println("Reorder Level: " + product.getReorderLevel());
+                        }
+                    }
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                }
+                break;
+            }
+        }
+
+    } while (choice != 0);
 }
 }

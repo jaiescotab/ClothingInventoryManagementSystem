@@ -8,65 +8,83 @@ public class InventoryManager {
 
     private ArrayList<Product> products;
     private ArrayList<StockTransaction> transactions;
+    private ArrayList<Supplier> suppliers;
 
     public InventoryManager() {
         products = new ArrayList<>();
         transactions = new ArrayList<>();
+        suppliers = new ArrayList<>();
 
         if (!loadData()) {
             loadSampleData();
         }
     }
     private boolean loadData() {
-        File file = new File("inventory.txt");
-        if (!file.exists()) {
+    File file = new File("inventory.txt");
+
+    if (!file.exists()) {
+        return false;
+    }
+
+    try (java.util.Scanner fileInput = new java.util.Scanner(file)) {
+        if (!fileInput.hasNextLine()
+                || !fileInput.nextLine().equals("INVENTORY_DATA")) {
             return false;
         }
-        try (java.util.Scanner fileInput = new java.util.Scanner(file)) {
-            if (!fileInput.hasNextLine() ||
-                    !fileInput.nextLine().equals("INVENTORY_DATA")) {
-                return false;
-            }
 
-            while (fileInput.hasNextLine()) {
-                String[] data = fileInput.nextLine().split("\\|", -1);
+        while (fileInput.hasNextLine()) {
+            String[] data = fileInput.nextLine().split("\\|", -1);
 
-                try {
-                    if (data[0].equals("P") && data.length == 10) {
-                        String id = data[2];
-                        String name = data[3];
-                        double price = Double.parseDouble(data[4]);
-                        int quantity = Integer.parseInt(data[5]);
-                        int reorderLevel = Integer.parseInt(data[6]);
+            try {
+                if (data[0].equals("P") && data.length == 10) {
+                    String id = data[2];
+                    String name = data[3];
+                    double price = Double.parseDouble(data[4]);
+                    int quantity = Integer.parseInt(data[5]);
+                    int reorderLevel = Integer.parseInt(data[6]);
 
-                        if (data[1].equals("Tops")) {
-                            products.add(new Tops(id, name, price, quantity,
-                                    reorderLevel, data[7], data[8], data[9]));
-                        } else if (data[1].equals("Bottoms")) {
-                            products.add(new Bottoms(id, name, price, quantity,
-                                    reorderLevel, data[7], data[8], data[9]));
-                        } else if (data[1].equals("Outerwear")) {
-                            products.add(new Outerwear(id, name, price, quantity,
-                                    reorderLevel, data[7], data[8], data[9]));
-                        }
-                    } else if (data[0].equals("T") && data.length == 5) {
-                        transactions.add(new StockTransaction(
-                                data[1],
-                                data[2],
-                                Integer.parseInt(data[3]),
-                                LocalDateTime.parse(data[4])
-                        ));
+                    if (data[1].equals("Tops")) {
+                        products.add(new Tops(id, name, price, quantity,
+                                reorderLevel, data[7], data[8], data[9]));
+                    } else if (data[1].equals("Bottoms")) {
+                        products.add(new Bottoms(id, name, price, quantity,
+                                reorderLevel, data[7], data[8], data[9]));
+                    } else if (data[1].equals("Outerwear")) {
+                        products.add(new Outerwear(id, name, price, quantity,
+                                reorderLevel, data[7], data[8], data[9]));
                     }
-                } catch (Exception e) {
-                    System.out.println("A saved record could not be loaded.");
+
+                } else if (data[0].equals("S") && data.length == 4) {
+                    suppliers.add(new Supplier(data[1], data[2], data[3]));
+
+                } else if (data[0].equals("SP") && data.length == 3) {
+                    Supplier supplier = findSupplierById(data[1]);
+                    Product product = findProductById(data[2]);
+
+                    if (supplier != null && product != null) {
+                        supplier.addProduct(product);
+                    }
+
+                } else if (data[0].equals("T") && data.length == 5) {
+                    transactions.add(new StockTransaction(
+                            data[1],
+                            data[2],
+                            Integer.parseInt(data[3]),
+                            LocalDateTime.parse(data[4])
+                    ));
                 }
+
+            } catch (Exception e) {
+                System.out.println("A saved record could not be loaded.");
             }
-            return true;
-        } catch (FileNotFoundException e) {
-            System.out.println("Unable to read saved inventory.");
-            return false;
         }
 
+        return true;
+
+    } catch (FileNotFoundException e) {
+        System.out.println("Unable to read saved inventory.");
+        return false
+    }
     }
     public void loadSampleData() {
 
@@ -363,6 +381,7 @@ public void saveData() {
     try (PrintWriter writer = new PrintWriter("inventory.txt")) {
         writer.println("INVENTORY_DATA");
 
+        // Save products
         for (Product product : products) {
             writer.println("P|" + product.getCategory()
                     + "|" + product.getId()
@@ -372,50 +391,86 @@ public void saveData() {
                     + "|" + product.getReorderLevel()
                     + "|" + product.getStorageData());
         }
+
+        // Save suppliers
+        for (Supplier supplier : suppliers) {
+            writer.println("S|" + supplier.getSupplierId()
+                    + "|" + supplier.getSupplierName()
+                    + "|" + supplier.getContactNumber());
+
+            // Save each supplier's assigned products
+            for (Product product : supplier.getProducts()) {
+                writer.println("SP|" + supplier.getSupplierId()
+                        + "|" + product.getId());
+            }
+        }
+
+        // Save transactions
         for (StockTransaction transaction : transactions) {
             writer.println("T|" + transaction.getTransactionType()
                     + "|" + transaction.getProductId()
                     + "|" + transaction.getQuantity()
                     + "|" + transaction.getTimestamp());
         }
-        System.out.println("Inventory and transaction history saved successfully!");
+
+        System.out.println("Inventory, suppliers, and transaction history saved successfully!");
+
     } catch (FileNotFoundException e) {
         System.out.println("Unable to save inventory data.");
     }
 }
-public ArrayList<Product> filterProducts(
-        String category, double minPrice, double maxPrice, String stockStatus) {
-
-    ArrayList<Product> filteredProducts = new ArrayList<>();
-
-    for (Product product : products) {
-
-        boolean matchesCategory = category.equalsIgnoreCase("All")
-                || product.getCategory().equalsIgnoreCase(category);
-
-        boolean matchesPrice = product.getUnitPrice() >= minPrice
-                && product.getUnitPrice() <= maxPrice;
-
-        boolean matchesStock;
-
-        if (stockStatus.equalsIgnoreCase("All")) {
-            matchesStock = true;
-        } else if (stockStatus.equalsIgnoreCase("In Stock")) {
-            matchesStock = product.getQuantity() > product.getReorderLevel();
-        } else if (stockStatus.equalsIgnoreCase("Low Stock")) {
-            matchesStock = product.getQuantity() > 0
-                    && product.getQuantity() <= product.getReorderLevel();
-        } else if (stockStatus.equalsIgnoreCase("Out of Stock")) {
-            matchesStock = product.getQuantity() == 0;
-        } else {
-            throw new IllegalArgumentException("Invalid stock status.");
-        }
-
-        if (matchesCategory && matchesPrice && matchesStock) {
-            filteredProducts.add(product);
+public void addSupplier(Supplier supplier) {
+    if (supplier == null) {
+        throw new IllegalArgumentException("Supplier cannot be null.");
+    }
+    for (Supplier existingSupplier : suppliers) {
+        if (existingSupplier.getSupplierId().equals(supplier.getSupplierId())) {
+            throw new IllegalArgumentException("Supplier ID already exists.");
         }
     }
+    suppliers.add(supplier);
+}
+public Supplier findSupplierById(String supplierId) {
+    for (Supplier supplier : suppliers) {
+        if (supplier.getSupplierId().equalsIgnoreCase(supplierId)) {
+            return supplier;
+        }
+    }
+    return null;
+}
+public void assignProductToSupplier(String supplierId, String productId) {
+    Supplier supplier = findSupplierById(supplierId);
+    Product product = findProductById(productId);
 
-    return filteredProducts;
+    if (supplier == null) {
+        throw new IllegalArgumentException("Supplier not found.");
+    }
+    if (product == null) {
+        throw new IllegalArgumentException("Product not found.");
+    }
+    supplier.addProduct(product);
+}
+public ArrayList<Product> getProductsBySupplier(String supplierId) {
+    Supplier supplier = findSupplierById(supplierId);
+
+    if (supplier == null) {
+        throw new IllegalArgumentException("Supplier not found.");
+    }
+    return supplier.getProducts();
+}
+public ArrayList<Product> getRestockListBySupplier(String supplierId) {
+    Supplier supplier = findSupplierById(supplierId);
+
+    if (supplier == null) {
+        throw new IllegalArgumentException("Supplier not found.");
+    }
+    return supplier.getRestockList();
+}
+public ArrayList<Supplier> getSuppliers() {
+    return new ArrayList<>(suppliers);
+}
+public ArrayList<Product> filterProducts(String category, double minPrice, double maxPrice, String stockStatus) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'filterProducts'");
 }
 }
