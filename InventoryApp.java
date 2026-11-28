@@ -22,10 +22,11 @@ public class InventoryApp {
             System.out.println("10. Generate Summary Report");
             System.out.println("11. View Transaction History");
             System.out.println("12. Advanced Search and Filters");
+            System.out.println("13. Point-of-Sale");
             System.out.println("0. Exit");
             System.out.print("Enter your choice: ");
 
-            choice = getValidChoice(input, 0, 12);
+            choice = getValidChoice(input, 0, 13);
 
             switch (choice) {
 
@@ -487,6 +488,8 @@ public class InventoryApp {
             System.out.println("Details: " + product.getProductInfo());
         }
     }
+    break;case 13:
+    pointOfSale(input, inventory);
     break;
                           case 0:
                     inventory.saveData();
@@ -558,4 +561,109 @@ public class InventoryApp {
             }
         }
     }
+
+private static void pointOfSale(Scanner input, InventoryManager inventory) {
+
+    ArrayList<CartItem> cart = new ArrayList<>();
+    String addMore;
+
+    do {
+        System.out.println("\n===== POINT OF SALE =====");
+        System.out.print("Enter Product ID: ");
+        String id = input.nextLine();
+
+        Product product = inventory.findProductById(id);
+
+        if (product == null) {
+            System.out.println("Product not found.");
+        } else {
+            System.out.println("Product: " + product.getName());
+            System.out.println("Available Stock: " + product.getQuantity());
+            System.out.println("Unit Price: " + product.getUnitPrice());
+
+            System.out.print("Enter Quantity: ");
+            int quantity = Integer.parseInt(input.nextLine());
+
+            if (quantity <= 0 || quantity > product.getQuantity()) {
+                System.out.println("Invalid quantity or insufficient stock.");
+            } else {
+                cart.add(new CartItem(product, quantity));
+                System.out.println("Product added to cart.");
+            }
+        }
+        System.out.print("Add another product? (Y/N): ");
+        addMore = input.nextLine();
+
+    } while (addMore.equalsIgnoreCase("Y"));
+    if (cart.isEmpty()) {
+        System.out.println("Cart is empty.");
+        return;
+    }
+    double subtotal = 0;
+
+    System.out.println("\n===== SHOPPING CART =====");
+
+    for (CartItem item : cart) {
+        System.out.println(item.getProduct().getName()
+                + " x " + item.getQuantity()
+                + " = " + item.getSubtotal());
+
+        subtotal += item.getSubtotal();
+    }
+    System.out.println("Subtotal: " + subtotal);
+
+    System.out.println("\nDiscount:");
+    System.out.println("1. No Discount");
+    System.out.println("2. Bulk Discount");
+    System.out.println("3. Loyalty Discount");
+
+    int discountChoice = Integer.parseInt(input.nextLine());
+    double discountRate = 0;
+
+    if (discountChoice == 2) {
+        discountRate = 0.10;
+    } else if (discountChoice == 3) {
+        discountRate = 0.05;
+    } else if (discountChoice != 1) {
+        System.out.println("Invalid discount choice.");
+        return;
+    }
+    double discount = subtotal * discountRate;
+    double total = subtotal - discount;
+
+    System.out.println("Discount: " + discount);
+    System.out.println("Total: " + total);
+
+    System.out.print("Enter Payment: ");
+    double payment = Double.parseDouble(input.nextLine());
+
+    if (!Double.isFinite(payment) || payment < total) {
+        System.out.println("Insufficient or invalid payment.");
+        return;
+    }
+    // Deduct stock only after successful payment.
+    for (CartItem item : cart) {
+        inventory.stockOut(
+                item.getProduct().getId(),
+                item.getQuantity()
+        );
+    }
+    double change = payment - total;
+
+    System.out.println("\n========== RECEIPT ==========");
+
+    for (CartItem item : cart) {
+        System.out.println(item.getProduct().getName()
+                + " x " + item.getQuantity()
+                + " = " + item.getSubtotal());
+    }
+    System.out.println("-----------------------------");
+    System.out.println("Subtotal: " + subtotal);
+    System.out.println("Discount: " + discount);
+    System.out.println("Total: " + total);
+    System.out.println("Payment: " + payment);
+    System.out.println("Change: " + change);
+    System.out.println("=============================");
+    System.out.println("Thank you for shopping!");
+}
 }
