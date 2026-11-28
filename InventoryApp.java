@@ -26,20 +26,107 @@ public class InventoryApp {
             System.out.print("Enter your choice: ");
 
            choice = getValidChoice(input);
-           choice = getValidChoice(input);
 
-            switch (choice) {
+           switch (choice) {
 
-                case 0:
-                    System.out.println("Exiting Inventory Management System...");
-                    break;
+    case 1:
+        System.out.println("\n===== ADD PRODUCT =====");
+        System.out.println("1. Tops");
+        System.out.println("2. Bottoms");
+        System.out.println("3. Outerwear");
+        System.out.print("Choose product category: ");
 
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
+        int categoryChoice = Integer.parseInt(input.nextLine());
+
+switch (categoryChoice) {
+
+    case 1:
+        System.out.println("You selected Tops.");
+        break;
+
+    case 2:
+        System.out.println("You selected Bottoms.");
+        break;
+
+    case 3:
+        System.out.println("You selected Outerwear.");
+        break;
+
+
+    default:
+        System.out.println("Invalid category choice.");
+}
+        String id;
+
+       while (true) {
+
+       System.out.print("Enter Product ID: ");
+           id = input.nextLine();
+
+       if (!id.isBlank()) {
+        break;
+    } else {
+        System.out.println("Product ID cannot be empty. Please try again.");
+    }
+}
+       String name;
+
+       while (true) {
+
+       System.out.print("Enter Product Name: ");
+            name = input.nextLine();
+
+       if (!name.isBlank()) {
+        break;
+    } else {
+        System.out.println("Product name cannot be empty. Please try again.");
+    }
+}
+   double unitPrice;
+
+     while (true) {
+    try {
+        System.out.print("Enter Unit Price: ");
+        unitPrice = Double.parseDouble(input.nextLine());
+
+        if (unitPrice >= 0) {
+            break;
+        } else {
+            System.out.println("Unit price cannot be negative. Please try again.");
+        }
+
+    } catch (NumberFormatException e) {
+        System.out.println("Invalid input. Please enter a valid number.");
+    }
+}
+
+int quantity;
+
+while (true) {
+    try {
+        System.out.print("Enter Quantity: ");
+        quantity = Integer.parseInt(input.nextLine());
+
+        if (quantity >= 0) {
+            break;
+        } else {
+            System.out.println("Quantity cannot be negative. Please try again.");
+        }
+
+    } catch (NumberFormatException e) {
+        System.out.println("Invalid input. Please enter a whole number.");
+    }
+
+}
+    case 0:
+        System.out.println("Exiting Inventory Management System...");
+        break;
+
+    default:
+        System.out.println("Invalid choice. Please try again.");
+}
 
         } while (choice != 0);
-
         input.close();
     }
     private static int getValidChoice(Scanner input) {
@@ -48,13 +135,11 @@ public class InventoryApp {
 
         try {
             int choice = Integer.parseInt(input.nextLine());
-
             if (choice >= 0 && choice <= 11) {
                 return choice;
             } else {
                 System.out.println("Invalid choice. Please enter a number from 0 to 11.");
             }
-
         } catch (NumberFormatException e) {
             System.out.println("Invalid input. Please enter a number.");
         }
