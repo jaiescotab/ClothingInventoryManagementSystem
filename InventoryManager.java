@@ -258,6 +258,45 @@ public class InventoryManager {
         }
         return false;
     }
+    public boolean undoLastTransaction() {
+
+    if (transactions.isEmpty()) {
+        return false;
+    }
+
+    StockTransaction lastTransaction =
+            transactions.get(transactions.size() - 1);
+
+    String type = lastTransaction.getTransactionType();
+
+    if (!type.equalsIgnoreCase("Stock In")
+            && !type.equalsIgnoreCase("Stock Out")) {
+        return false;
+    }
+
+    Product product = findProductById(lastTransaction.getProductId());
+
+    if (product == null) {
+        return false;
+    }
+
+    int quantity = lastTransaction.getQuantity();
+
+    if (type.equalsIgnoreCase("Stock In")) {
+        if (product.getQuantity() < quantity) {
+            return false;
+        }
+
+        product.setQuantity(product.getQuantity() - quantity);
+
+    } else {
+        product.setQuantity(product.getQuantity() + quantity);
+    }
+
+    transactions.remove(transactions.size() - 1);
+
+    return true;
+}
     public ArrayList<Product> getLowStockProducts() {
         ArrayList<Product> lowStockProducts = new ArrayList<>();
 
@@ -470,7 +509,7 @@ public ArrayList<Supplier> getSuppliers() {
     return new ArrayList<>(suppliers);
 }
 public ArrayList<Product> filterProducts(String category, double minPrice, double maxPrice, String stockStatus) {
-    // TODO Auto-generated method stub
+
     throw new UnsupportedOperationException("Unimplemented method 'filterProducts'");
 }
 }

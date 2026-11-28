@@ -24,10 +24,11 @@ public class InventoryApp {
             System.out.println("12. Advanced Search and Filters");
             System.out.println("13. Point-of-Sale");
             System.out.println("14. Supplier Management");
+            System.out.println("15. Undo Last Transaction");
             System.out.println("0. Exit");
             System.out.print("Enter your choice: ");
 
-            choice = getValidChoice(input, 0, 14);
+            choice = getValidChoice(input, 0, 15);
 
             switch (choice) {
 
@@ -496,6 +497,13 @@ public class InventoryApp {
 
     case 14:
     supplierManagement(input, inventory);
+    break;
+    case 15:
+    if (inventory.undoLastTransaction()) {
+        System.out.println("Last stock transaction undone successfully!");
+    } else {
+        System.out.println("No stock transaction available to undo.");
+    }
     break;
                           case 0:
                     inventory.saveData();
