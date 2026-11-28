@@ -83,7 +83,7 @@ public class InventoryManager {
 
     } catch (FileNotFoundException e) {
         System.out.println("Unable to read saved inventory.");
-        return false
+        return false;
     }
     }
     public void loadSampleData() {
