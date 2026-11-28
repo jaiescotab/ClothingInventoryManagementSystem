@@ -508,8 +508,36 @@ public ArrayList<Product> getRestockListBySupplier(String supplierId) {
 public ArrayList<Supplier> getSuppliers() {
     return new ArrayList<>(suppliers);
 }
+
 public ArrayList<Product> filterProducts(String category, double minPrice, double maxPrice, String stockStatus) {
 
-    throw new UnsupportedOperationException("Unimplemented method 'filterProducts'");
+    ArrayList<Product> filteredProducts = new ArrayList<>();
+
+    for (Product product : products) {
+
+        boolean matchesCategory =
+                category.equalsIgnoreCase("All")
+                || product.getCategory().equalsIgnoreCase(category);
+
+        boolean matchesPrice =
+                product.getUnitPrice() >= minPrice
+                && product.getUnitPrice() <= maxPrice;
+
+        boolean matchesStock =
+                stockStatus.equalsIgnoreCase("All")
+                || (stockStatus.equalsIgnoreCase("In Stock")
+                    && product.getQuantity() > product.getReorderLevel())
+                || (stockStatus.equalsIgnoreCase("Low Stock")
+                    && product.getQuantity() > 0
+                    && product.getQuantity() <= product.getReorderLevel())
+                || (stockStatus.equalsIgnoreCase("Out of Stock")
+                    && product.getQuantity() == 0);
+
+        if (matchesCategory && matchesPrice && matchesStock) {
+            filteredProducts.add(product);
+        }
+    }
+
+    return filteredProducts;
 }
 }
