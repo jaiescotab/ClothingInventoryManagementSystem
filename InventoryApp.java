@@ -116,8 +116,32 @@ while (true) {
     } catch (NumberFormatException e) {
         System.out.println("Invalid input. Please enter a whole number.");
     }
-
 }
+    int reorderLevel=0;
+
+while (true) {
+    try {
+        System.out.print("Enter Reorder Level: ");
+        reorderLevel = Integer.parseInt(input.nextLine());
+
+        if (reorderLevel >= 0) {
+            break;
+        } else {
+            System.out.println("Reorder level cannot be negative. Please try again.");
+        }
+    } catch (NumberFormatException e) {
+        System.out.println("Invalid input. Please enter a whole number.");
+    }
+}
+System.out.println("\n===== PRODUCT DETAILS =====");
+System.out.println("Product ID: " + id);
+System.out.println("Product Name: " + name);
+System.out.println("Unit Price: " + unitPrice);
+System.out.println("Quantity: " + quantity);
+System.out.println("Reorder Level: " + reorderLevel);
+ break;
+
+
     case 0:
         System.out.println("Exiting Inventory Management System...");
         break;
